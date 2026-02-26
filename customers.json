@@ -1,0 +1,627 @@
+[
+    {
+        "name": "Noora Restorant",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Guansa Maed",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Mesi Gebeta",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "DoDO Restorant",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Bilos Pastry 1",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Bilos Pastry 2",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Bilos Pastry 3",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Ambassdor Mole",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Sapor Bella",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Britsh Embassy",
+        "frequency": "Quarterly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Betebrhane Maed",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "The Grand Palace",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Afrodite Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Addis Taem",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "New Laungh",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Henom Restorant",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Sah Pharmacy",
+        "frequency": "Quarterly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "J&K Restorant",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Bekele Mola",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Dhl Terminal",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Ecc Enjira Bet",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Ecc Cargo",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "BentarK Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Amnen Appartment",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Aberus Kitfo",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Bilos Pastry 4",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "South Gate Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Bilos Pastry 5",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Dhl Atlas",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Harmny Hotel",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "VENTION Hotel",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Tamem Bole",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Zemilo Hotel",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Abssinya Intergrated",
+        "frequency": "Quarterly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Sapore Hotel",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Kesel Restorant",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Fabrica Café",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Meridian Appartment",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Signature Apartments",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Nelliys Café",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Obsidean Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Andromeda Hotel",
+        "frequency": "Quarterly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Adey Abeba Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Triple Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Debre Damo Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Abole Café",
+        "frequency": "Bi-Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Marcean Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Deleopol Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Bethesida American Medical Plaza",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Bilos Pastry 6",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Bilos Pastry 7",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Bilos Pastry 8",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Human Well",
+        "frequency": "Quarterly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Chiko Restaurant",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Vibes",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Blusky Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Swiss Nexuse Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Abssinya Rencence Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Tamem Gerji",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Este Africa",
+        "frequency": "Quarterly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Qualabels",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Z Addis Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Credocks",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Aselefch Merga",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Belivew Hotel",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Ecc Arabsa",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Craving Preparation",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Sweet World",
+        "frequency": "Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Lilly Abdurman",
+        "frequency": "Bi-Monthly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Emi",
+        "frequency": "Quarterly",
+        "team": "Assefa & Getasew"
+    },
+    {
+        "name": "Country Trading Piyassa",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Eliyana Hotel",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "The Mozaik Hotel",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Segone Marli (2 Branch)",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Diyana (2 Branch)",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Eset Café",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Family Food",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Gaey Restorant",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Himma Bakery",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "EDR",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Ehiopica Café",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Eligel Hotel",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Eligel Fitnece",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Boru Café",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Buluko Textile",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Dabi",
+        "frequency": "Bi-Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Stay Easy Hotel",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Tsion Hotel",
+        "frequency": "Bi-Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Azem Pharma",
+        "frequency": "Quarterly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Nafiyad Hotel",
+        "frequency": "Quarterly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Elemtu Milk Production",
+        "frequency": "Quarterly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Pin Point",
+        "frequency": "Quarterly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Tamrat Beyene",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Bilos Pastry 9",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Bilos Pastry 10",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Bilos Pastry 11",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Dodai",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Jotun",
+        "frequency": "Monthly",
+        "team": "Anwar & Tezazu"
+    },
+    {
+        "name": "Wagga Aye Center",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Wanchi",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Leggcy Appartment",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Mach Restoant",
+        "frequency": "Bi-Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Portugal Embassy",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Best Western",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Vardas Bar",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Warka Gusthouse",
+        "frequency": "Bi-Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Nib Bank",
+        "frequency": "Quarterly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Master Card",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Royal Property",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Weygoss Guest House",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Nazra Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Marda Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Miracle Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Ghion Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Marriot Hotel",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Country Trading Skylight",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Emi Bishoftu",
+        "frequency": "Quarterly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Garden City",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Shitaye Suite",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Top View",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Fafresh",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Sweet World",
+        "frequency": "Monthly",
+        "team": "Ashnfi & Aman"
+    },
+    {
+        "name": "Meketaye Girma",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Nonnas Restruant PLC",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    },
+    {
+        "name": "Kassina Hotel",
+        "frequency": "Monthly",
+        "team": "Alemayehu & Ashebir"
+    }
+]

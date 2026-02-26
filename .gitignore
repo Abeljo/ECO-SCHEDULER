@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.xlsx
+results.txt
+output.txt
+run_output.txt
+run_results.log
+error_log.txt
