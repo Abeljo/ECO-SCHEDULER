@@ -1,5 +1,5 @@
 /**
- *  Auther ABEL JO
+ *  Auther ABEL JO 
  * 
  * OUR PEST CONTROL SCHEDULER
  * 
@@ -33,6 +33,38 @@ const MARCH_YEAR = 2026; // Current year or specific
 const MONTH_INDEX = 2; // March is 0-indexed in JS Date (0=Jan, 1=Feb, 2=Mar)
 const CAPACITY_LIMIT = 18; // Max target per day
 const EMERGENCY_RESERVE = 1; // 1 hour/job reserved
+const NUMBER_OF_CARS = 2;
+const TEAMS_PER_CAR = 2;
+const MAX_ACTIVE_TEAMS_NORMAL_DAY = NUMBER_OF_CARS * TEAMS_PER_CAR; // 4 teams/day
+const MAX_NON_VIP_ACTIVE_TEAMS_ON_VIP_DAY = (NUMBER_OF_CARS - 1) * TEAMS_PER_CAR; // 2 teams/day (VIP uses dedicated car)
+// NOTE: We use location as a preference when choosing days (to group jobs by area),
+// but we do NOT hard-limit locations per team per day anymore. This avoids missing visits.
+
+/**
+ * Normalize team names so small spelling / spacing differences in the JSON
+ * do not create extra "teams" in the schedule.
+ *
+ * Canonical teams we expect:
+ * - "Alemayehu & Ashebir"
+ * - "Anwar & Tezazu"
+ * - "Ashenafi & Aman"
+ * - "Assefa & Getasew"
+ */
+function normalizeTeamName(raw) {
+    if (!raw) return raw;
+
+    const key = raw.toLowerCase().replace(/\s+/g, '');
+
+    const mapping = {
+        'alemayehu&ashebir': 'Alemayehu & Ashebir',
+        'anwar&tezazu': 'Anwar & Tezazu',
+        'ashnfi&aman': 'Ashenafi & Aman',
+        'ashenafi&aman': 'Ashenafi & Aman',
+        'assefa&getasew': 'Assefa & Getasew'
+    };
+
+    return mapping[key] || raw.trim();
+}
 
 class PestControlScheduler {
     constructor() {
@@ -40,6 +72,7 @@ class PestControlScheduler {
         this.calendar = [];
         this.schedule = new Map(); // Date string -> { teamName: [customers] }
         this.teams = new Set();
+        this.vipTeams = new Set();
         this.summary = {
             totalCustomers: 0,
             totalVisits: 0,
@@ -59,6 +92,9 @@ class PestControlScheduler {
 
         // Special Rule: EDR is the VIP customer
         this.customers.forEach(c => {
+            // Normalize team names so we always end up with exactly 4 logical teams.
+            c.team = normalizeTeamName(c.team);
+
             if (c.name === 'EDR') {
                 c.frequency = 'VIP_Every_2_Days';
             }
@@ -66,8 +102,62 @@ class PestControlScheduler {
             this.summary.totalCustomers++;
         });
 
+        // Track which teams have VIP routes (used for logistics constraints)
+        this.customers.forEach(c => {
+            if (c.frequency === 'VIP_Every_2_Days') {
+                this.vipTeams.add(c.team);
+            }
+        });
+
         // Initialize schedule map for all days in March
         this.generateCalendar();
+    }
+
+    /**
+     * Utility: distinct teams that have >=1 job on a day
+     */
+    getActiveTeams(dayData) {
+        return Object.entries(dayData.jobs)
+            .filter(([, jobs]) => jobs.length > 0)
+            .map(([team]) => team);
+    }
+
+    /**
+     * Utility: does this day already contain any VIP job?
+     */
+    dayHasVipJob(dayData) {
+        return Object.values(dayData.jobs).some(teamJobs => teamJobs.some(j => j.type === 'VIP'));
+    }
+
+    /**
+     * Utility: does a given team already have a VIP job on this day?
+     */
+    teamHasVipJob(dayData, team) {
+        const jobs = dayData.jobs[team] || [];
+        return jobs.some(j => j.type === 'VIP');
+    }
+
+    /**
+     * Utility: set of distinct locations a team is visiting on a given day
+     */
+    getTeamLocationsForDay(dayData, team) {
+        const jobs = dayData.jobs[team] || [];
+        const locations = new Set();
+        jobs.forEach(j => {
+            if (j.location) {
+                locations.add(j.location);
+            }
+        });
+        return locations;
+    }
+
+    /**
+     * Utility: whether a team already has at least one job in this customer's location on this day
+     */
+    teamHasSameLocation(dayData, team, customer) {
+        if (!customer.location) return false;
+        const locations = this.getTeamLocationsForDay(dayData, team);
+        return locations.has(customer.location);
     }
 
     /**
@@ -101,6 +191,32 @@ class PestControlScheduler {
         const dateStr = format(date, 'yyyy-MM-dd');
         const dayData = this.schedule.get(dateStr);
 
+        // Logistics: if VIP is scheduled on this date, reserve one car exclusively for VIP route.
+        // That means only 2 other (non-VIP) teams can work that day (total 3 teams: VIP team + 2 other teams).
+        const isVipCustomer = customer.frequency === 'VIP_Every_2_Days';
+        const dayHasVip = this.dayHasVipJob(dayData);
+
+        if (dayHasVip) {
+            // If a team has the VIP route that day, it should not take non-VIP jobs (dedicated car + far location).
+            if (this.teamHasVipJob(dayData, team) && !isVipCustomer) return false;
+
+            // Non-VIP teams allowed (besides VIP team(s)) are limited to 2 teams total for the whole day.
+            if (!this.vipTeams.has(team)) {
+                const activeTeams = this.getActiveTeams(dayData);
+                const activeNonVipTeams = activeTeams.filter(t => !this.vipTeams.has(t));
+                const teamAlreadyActive = (dayData.jobs[team] || []).length > 0;
+
+                if (!teamAlreadyActive && activeNonVipTeams.length >= MAX_NON_VIP_ACTIVE_TEAMS_ON_VIP_DAY) {
+                    return false;
+                }
+            }
+        } else {
+            // Normal day: 2 cars * 2 teams per car => max 4 active teams/day (supports >4 teams if future data grows).
+            const activeTeams = this.getActiveTeams(dayData);
+            const teamAlreadyActive = (dayData.jobs[team] || []).length > 0;
+            if (!teamAlreadyActive && activeTeams.length >= MAX_ACTIVE_TEAMS_NORMAL_DAY) return false;
+        }
+
         // Check daily total capacity
         let dailyTotal = 0;
         Object.values(dayData.jobs).forEach(teamJobs => {
@@ -121,7 +237,8 @@ class PestControlScheduler {
         dayData.jobs[team].push({
             name: customer.name,
             frequency: customer.frequency,
-            type: typeLabel // Monthly_1, Monthly_2, etc.
+            type: typeLabel, // Monthly_1, Monthly_2, etc.
+            location: customer.location || ''
         });
 
         // Update summary
@@ -139,60 +256,52 @@ class PestControlScheduler {
             // Start on March 1st for consistency
             let currentDate = startOfMonth(new Date(MARCH_YEAR, MONTH_INDEX));
             while (currentDate.getMonth() === MONTH_INDEX) {
-                this.addJob(currentDate, customer.team, customer, 'VIP');
+                if (this.canSchedule(currentDate, customer.team, customer, true)) {
+                    this.addJob(currentDate, customer.team, customer, 'VIP');
+                } else {
+                    this.summary.violations.push(`Could not schedule VIP for ${customer.name} on ${format(currentDate, 'yyyy-MM-dd')}`);
+                }
                 currentDate = addDays(currentDate, 2);
             }
         });
     }
 
     /**
-     * Schedule Bi-Monthly (4 visits, 7-8 days apart)
-     * Spreads jobs across 4 quarters of the month.
+     * Schedule Bi-Monthly
+     * Business interpretation: 1 visit per month (in March).
      */
     scheduleBiMonthly() {
         const biMonthly = this.customers.filter(c => c.frequency === 'Bi-Monthly');
         biMonthly.forEach(customer => {
-            const intervals = [
-                { start: 1, end: 7 },
-                { start: 8, end: 14 },
-                { start: 15, end: 21 },
-                { start: 22, end: 31 }
-            ];
-            let lastDate = null;
+            // Consider all working days in March, choose the best single day.
+            const candidateDays = Array.from(this.schedule.values())
+                .filter(d => d.isWorkingDay)
+                .sort((a, b) => {
+                    const loadA = a.jobs[customer.team].length;
+                    const loadB = b.jobs[customer.team].length;
+                    if (loadA !== loadB) return loadA - loadB;
 
-            intervals.forEach((range, index) => {
-                // Find day in range with lowest team load
-                const candidateDays = Array.from(this.schedule.values())
-                    .filter(d => {
-                        const dayNum = d.date.getDate();
-                        return dayNum >= range.start && dayNum <= range.end && d.isWorkingDay;
-                    })
-                    .sort((a, b) => {
-                        const loadA = a.jobs[customer.team].length;
-                        const loadB = b.jobs[customer.team].length;
-                        if (loadA !== loadB) return loadA - loadB;
-                        // Secondary sort by total daily load
-                        return Object.values(a.jobs).flat().length - Object.values(b.jobs).flat().length;
-                    });
+                    // Prefer days where this team is already in the same location (less driving).
+                    const sameLocA = this.teamHasSameLocation(a, customer.team, customer);
+                    const sameLocB = this.teamHasSameLocation(b, customer.team, customer);
+                    if (sameLocA !== sameLocB) return sameLocA ? -1 : 1;
 
-                let scheduled = false;
-                for (const dayData of candidateDays) {
-                    if (this.canSchedule(dayData.date, customer.team, customer)) {
-                        if (lastDate) {
-                            const gap = differenceInDays(dayData.date, lastDate);
-                            if (gap < 6 || gap > 9) continue;
-                        }
-                        this.addJob(dayData.date, customer.team, customer, 'Bi-Monthly');
-                        lastDate = dayData.date;
-                        scheduled = true;
-                        break;
-                    }
+                    // Secondary sort by total daily load
+                    return Object.values(a.jobs).flat().length - Object.values(b.jobs).flat().length;
+                });
+
+            let scheduled = false;
+            for (const dayData of candidateDays) {
+                if (this.canSchedule(dayData.date, customer.team, customer)) {
+                    this.addJob(dayData.date, customer.team, customer, 'Bi-Monthly');
+                    scheduled = true;
+                    break;
                 }
+            }
 
-                if (!scheduled) {
-                    this.summary.violations.push(`Could not balance Bi-Monthly visit ${index + 1} for ${customer.name}`);
-                }
-            });
+            if (!scheduled) {
+                this.summary.violations.push(`Could not schedule Bi-Monthly visit for ${customer.name}`);
+            }
         });
     }
 
@@ -213,7 +322,17 @@ class PestControlScheduler {
             // Find best day for 1st visit (1-15) based on team load
             const firstHalfDays = Array.from(this.schedule.values())
                 .filter(d => d.date.getDate() <= 15 && d.isWorkingDay)
-                .sort((a, b) => a.jobs[customer.team].length - b.jobs[customer.team].length);
+                .sort((a, b) => {
+                    const loadA = a.jobs[customer.team].length;
+                    const loadB = b.jobs[customer.team].length;
+                    if (loadA !== loadB) return loadA - loadB;
+
+                    const sameLocA = this.teamHasSameLocation(a, customer.team, customer);
+                    const sameLocB = this.teamHasSameLocation(b, customer.team, customer);
+                    if (sameLocA !== sameLocB) return sameLocA ? -1 : 1;
+
+                    return Object.values(a.jobs).flat().length - Object.values(b.jobs).flat().length;
+                });
 
             for (const dayData of firstHalfDays) {
                 if (this.canSchedule(dayData.date, customer.team, customer)) {
@@ -234,7 +353,17 @@ class PestControlScheduler {
                     const gap = differenceInDays(d.date, firstVisitDate);
                     return gap >= 12 && gap <= 16 && d.isWorkingDay;
                 })
-                .sort((a, b) => a.jobs[customer.team].length - b.jobs[customer.team].length);
+                .sort((a, b) => {
+                    const loadA = a.jobs[customer.team].length;
+                    const loadB = b.jobs[customer.team].length;
+                    if (loadA !== loadB) return loadA - loadB;
+
+                    const sameLocA = this.teamHasSameLocation(a, customer.team, customer);
+                    const sameLocB = this.teamHasSameLocation(b, customer.team, customer);
+                    if (sameLocA !== sameLocB) return sameLocA ? -1 : 1;
+
+                    return Object.values(a.jobs).flat().length - Object.values(b.jobs).flat().length;
+                });
 
             for (const dayData of secondHalfDays) {
                 if (this.canSchedule(dayData.date, customer.team, customer)) {
@@ -267,6 +396,9 @@ class PestControlScheduler {
                     const teamLoadA = a.jobs[customer.team].length;
                     const teamLoadB = b.jobs[customer.team].length;
                     if (teamLoadA !== teamLoadB) return teamLoadA - teamLoadB;
+                    const sameLocA = this.teamHasSameLocation(a, customer.team, customer);
+                    const sameLocB = this.teamHasSameLocation(b, customer.team, customer);
+                    if (sameLocA !== sameLocB) return sameLocA ? -1 : 1;
                     return Object.values(a.jobs).flat().length - Object.values(b.jobs).flat().length;
                 });
 
@@ -293,6 +425,42 @@ class PestControlScheduler {
             if (total > CAPACITY_LIMIT && !isSunday(day.date)) {
                 // Technically VIP can happen on Sunday, but for working days we target 18
             }
+
+            // Logistics validation:
+            // - Sundays: only VIP jobs should exist
+            // - VIP days: at most 2 non-VIP teams can have jobs
+            const dayHasVip = this.dayHasVipJob(day);
+            const activeTeams = this.getActiveTeams(day);
+            const activeNonVipTeams = activeTeams.filter(t => !this.vipTeams.has(t));
+
+            if (isSunday(day.date)) {
+                const nonVipJobsExist = Object.entries(day.jobs).some(([team, jobs]) => {
+                    if (this.vipTeams.has(team)) return false;
+                    return jobs.length > 0;
+                });
+                if (nonVipJobsExist) {
+                    this.summary.violations.push(`Sunday logistics violation on ${format(day.date, 'yyyy-MM-dd')}: non-VIP teams scheduled.`);
+                }
+            }
+
+            if (dayHasVip && activeNonVipTeams.length > MAX_NON_VIP_ACTIVE_TEAMS_ON_VIP_DAY) {
+                this.summary.violations.push(
+                    `VIP-day logistics violation on ${format(day.date, 'yyyy-MM-dd')}: ${activeNonVipTeams.length} non-VIP teams scheduled (max ${MAX_NON_VIP_ACTIVE_TEAMS_ON_VIP_DAY}).`
+                );
+            }
+
+            // VIP team must be dedicated: if VIP job exists for a VIP team, it can't also have non-VIP jobs that day
+            this.vipTeams.forEach(vipTeam => {
+                const jobs = day.jobs[vipTeam] || [];
+                const hasVip = jobs.some(j => j.type === 'VIP');
+                if (!hasVip) return;
+                const hasNonVip = jobs.some(j => j.type !== 'VIP');
+                if (hasNonVip) {
+                    this.summary.violations.push(
+                        `VIP-team dedication violation on ${format(day.date, 'yyyy-MM-dd')}: team "${vipTeam}" has VIP + non-VIP jobs same day.`
+                    );
+                }
+            });
         });
 
         // Check if any customer missed their expected visit count
@@ -314,13 +482,8 @@ class PestControlScheduler {
                 }
             }
 
-            if (customer.frequency === 'Bi-Monthly') {
-                for (let i = 1; i < jobs.length; i++) {
-                    const gap = differenceInDays(jobs[i].date, jobs[i - 1].date);
-                    if (gap < 6 || gap > 9) {
-                        this.summary.violations.push(`Bi-Monthly violation for ${customer.name}: gap between visit ${i} and ${i + 1} is ${gap} days.`);
-                    }
-                }
+            if (customer.frequency === 'Bi-Monthly' && jobs.length !== 1) {
+                this.summary.violations.push(`Bi-Monthly violation for ${customer.name}: expected 1 visit, got ${jobs.length}.`);
             }
         });
 
@@ -370,7 +533,8 @@ class PestControlScheduler {
 
             teamNames.forEach((team, idx) => {
                 const jobs = dayData.jobs[team];
-                rowData[`team_${idx}`] = jobs.map(j => `• ${j.name}`).join('\n');
+                // Placeholder; we will overwrite with rich text after adding the row
+                rowData[`team_${idx}`] = jobs.length ? ' ' : '';
                 rowData.total += jobs.length;
             });
 
@@ -394,7 +558,7 @@ class PestControlScheduler {
             row.getCell(2).alignment = { vertical: 'middle', horizontal: 'center' };
             row.getCell(sheet.columns.length).alignment = { vertical: 'middle', horizontal: 'center' };
 
-            // Apply Coloring Rules
+            // Apply Coloring Rules and rich text with faded location
             teamNames.forEach((team, idx) => {
                 const jobs = dayData.jobs[team];
                 const cell = row.getCell(3 + idx);
@@ -402,32 +566,67 @@ class PestControlScheduler {
                 if (jobs.length > 0) {
                     const type = jobs[0].type;
                     let bgColor = 'FFFFFF';
-                    let textColor = '000000';
+                    let mainTextColor = '000000';
 
                     // Refined, softer color palette
                     if (type === 'VIP') {
                         bgColor = 'FFD9D9'; // Soft Red
-                        textColor = '990000'; // Dark Red Text
+                        mainTextColor = '990000'; // Dark Red Text
                     } else if (type === 'Bi-Monthly') {
                         bgColor = 'FFF2CC'; // Soft Orange/Yellow
-                        textColor = '996600'; // Brownish Text
+                        mainTextColor = '996600'; // Brownish Text
                     } else if (type === 'Monthly_1') {
                         bgColor = 'D9EAD3'; // Soft Green
-                        textColor = '274E13'; // Dark Green Text
+                        mainTextColor = '274E13'; // Dark Green Text
                     } else if (type === 'Monthly_2') {
                         bgColor = 'D0E2F3'; // Soft Blue
-                        textColor = '0B5394'; // Dark Blue Text
+                        mainTextColor = '0B5394'; // Dark Blue Text
                     } else if (type === 'Quarterly') {
                         bgColor = 'EAD1DC'; // Soft Purple/Pink
-                        textColor = '741B47'; // Dark Purple Text
+                        mainTextColor = '741B47'; // Dark Purple Text
                     }
 
+                    // Background color per frequency
                     cell.fill = {
                         type: 'pattern',
                         pattern: 'solid',
                         fgColor: { argb: bgColor }
                     };
-                    cell.font = { color: { argb: textColor }, size: 8.5, name: 'Segoe UI', bold: true };
+
+                    // Build rich text: "• Name (Location)" with location in faded gray
+                    const richText = [];
+                    jobs.forEach((j, i) => {
+                        const nameText = `• ${j.name}`;
+                        const locText = j.location ? ` (${j.location})` : '';
+
+                        richText.push({
+                            text: nameText,
+                            font: {
+                                color: { argb: mainTextColor },
+                                size: 8.5,
+                                name: 'Segoe UI',
+                                bold: true
+                            }
+                        });
+
+                        if (locText) {
+                            richText.push({
+                                text: locText,
+                                font: {
+                                    color: { argb: '999999' }, // faded gray
+                                    size: 8.0,
+                                    name: 'Segoe UI',
+                                    italic: true
+                                }
+                            });
+                        }
+
+                        if (i < jobs.length - 1) {
+                            richText.push({ text: '\n' });
+                        }
+                    });
+
+                    cell.value = { richText };
                 }
             });
 
